@@ -1,4 +1,4 @@
-# Allie
+# Allie <img src="images/Allie_logo.jpg" width = 110px align="right" vertical-align="top">
 
 This is an R package featuring various utilities and convenient functions for data processing and summary statistics.
 
