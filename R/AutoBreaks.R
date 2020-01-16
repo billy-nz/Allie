@@ -17,7 +17,6 @@
 #' @return returns a character vector of the same length as input numeric or integer vector. Missing values written as NA.
 #'
 #' @seealso \code{\link{FreqTable}} utilised this function when users attempt to create a frequency table using continous variables.
-#' @export
 #' @examples
 #' # Example Data
 #' norm.int <- runif(1000, 0, 1)

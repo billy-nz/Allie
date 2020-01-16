@@ -12,12 +12,7 @@ This is an R package featuring various utilities and convenient functions for da
 #### Cleaning
 - `AutoBands` Easily label continuous data into banded categories
 - `FindNearest` Quickly find and prioritise time-points
-
-#### Blending
-- `CVDRisk` Combine variables to create a risk score
 - `CMIndex` Combine variables to create a multi-morbidity index
-
-#### Aggregation
 - `FreqTable` Quickly create summary tables containing multiple subgroups
 
 ## Installation
@@ -31,4 +26,4 @@ devtools::install_github("billy-nz/Allie")
 ```
 
 ## Author
-- Billy Wu - University of Auckland
+- Billy Wu // billy@korubi.co.nz

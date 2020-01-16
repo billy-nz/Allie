@@ -25,7 +25,6 @@
 #' 
 #' @return Returns a data.frame with a contingency table structure. Missing values written as NA. Can be copied to excel using the argument \code{copy=TRUE}
 #'
-#' @export
 #' @examples
 #' FreqTable(data = SAMPLE, 
 #'           xvar = c("en_nzdep_q", "en_eth","hx_broad_cvd"), 
