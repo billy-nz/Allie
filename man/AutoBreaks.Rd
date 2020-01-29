@@ -2,7 +2,7 @@
 % Please edit documentation in R/AutoBreaks.R
 \name{AutoBreaks}
 \alias{AutoBreaks}
-\title{Automatic Breaks for Continuous Data}
+\title{Automatically Create Labelled Breaks for Continuous Data}
 \usage{
 AutoBreaks(x, by, ...)
 }
@@ -14,11 +14,11 @@ AutoBreaks(x, by, ...)
 \item{...}{Set decimal place for integers. Default is 2. Can provide value only. Optional.}
 }
 \value{
-returns a character vector of the same length as input numeric or integer vector. Missing values written as NA.
+Returns a character vector of the same length as input. Missing values written as NA.
 }
 \description{
-\code{AutoBreaks} returns a character vector of the same length as the input numeric or integer vector x.
-                  Each value of x is replaced by a label matching the break parameters. Break parameters can either be fixed, defined, or split.
+\code{AutoBreaks} returns a character vector of the same length as input x. Each value of x is replaced by a label matching the break parameters. 
+                  Break parameters can either be fixed, defined, or split. See details.
 }
 \details{
 The values for paremeter \code{by} can be supplied in 1 of 3 ways:
@@ -35,23 +35,23 @@ cont.int <- runif(1000, 1, 15)
 rand.num <- sample(20:84, 100, replace = T)
 
 # Fixed breaks (takes a single value):
-table(AutoBreaks(rand.num, by = 10))
-table(AutoBreaks(cont.int, 3))
-table(AutoBreaks(norm.int, 0.2))
+AutoBreaks(rand.num, by = 10)
+AutoBreaks(cont.int, 3)
+AutoBreaks(norm.int, 0.2)
 
 # Defined breaks (user-defined breaks):
 # NB: Starting value can be 0 if required
-table(AutoBreaks(rand.num, by = c(30,45,65)))
-table(AutoBreaks(cont.int, c(2,3,4,5)))
-table(AutoBreaks(norm.int, c(0,0.8)))
+AutoBreaks(rand.num, by = c(30,45,65))
+AutoBreaks(cont.int, c(2,3,4,5))
+AutoBreaks(norm.int, c(0,0.8))
 
 # Split break
-table(AutoBreaks(rand.num, c(55, 55)))
-table(AutoBreaks(norm.int, by = c(0.8, 0.8), 6)) # can set decimal place
+AutoBreaks(rand.num, c(55, 55))
+AutoBreaks(norm.int, by = c(0.8, 0.8), 6) # can set decimal place
 
 # Can set decimal place
-table(AutoBreaks(cont.int, c(3,4,5), dp=4))
-table(AutoBreaks(norm.int, c(0.4,0.6,0.8), 5))
+AutoBreaks(cont.int, c(3,4,5), dp=4)
+AutoBreaks(norm.int, c(0.4,0.6,0.8), 5)
 }
 \seealso{
 \code{\link{FreqTable}} utilised this function when users attempt to create a frequency table using continous variables.
