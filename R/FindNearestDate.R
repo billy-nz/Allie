@@ -34,7 +34,7 @@
 #'                    
 #' # Implement with data.table
 #' setDT(DATA)
-#' DATA[, by = UID,
+#' DATA[, by = UID
 #'      , flag := FindNearestDate(index = visit_date, 
 #'                                comparison = result_date, 
 #'                                mode = "d",
@@ -43,24 +43,35 @@
 #'                                
 #' # Implement with dplyr
 #' DATA %>% 
-#' group_by(UID) %>% 
-#' mutate(flag = FindNearestDate(index = visit_date, 
-#'                                comparison = result_date, 
-#'                                mode = "n",
-#'                                from = -730,
-#'                                to = 548))
+#'   group_by(UID) %>% 
+#'   mutate(flag = FindNearestDate(index = visit_date, 
+#'                                 comparison = result_date, 
+#'                                 mode = "n",
+#'                                 from = -730,
+#'                                 to = 548))
 #' 
 #' # Implement with base R 
 #' DATA$flag <- unlist(by(DATA, DATA$UID, function(x) {
-#' FindNearestDate(index = x$visit_date,
-#'                 comparison = x$result_date,
-#'                 mode = "n",
-#'                 from = -730,
-#'                 to = 548) }))
+#'   FindNearestDate(index = x$visit_date,
+#'                   comparison = x$result_date,
+#'                   mode = "n",
+#'                   from = -730,
+#'                   to = 548) }))
 
 # --- FUN ----FindNearestDate (v2)
-FindNearestDate <- function(index, comparison, mode, to, from){
+FindNearestDate <- function(index, comparison, mode, from, to){
  
+  # Param Check
+  param.dat <- deparse(substitute(dat))!=""
+  
+  params  <- c("index", "comparison", "mode", "from", "to")
+  
+  for(i in params){
+    if(eval(substitute(missing(i)))) {
+      stop(paste("Missing parameter(s):", sQuote(i)), call. = F)
+    }
+  }
+  
  x <- as.Date(unique(index))
  y <- comparison
  
