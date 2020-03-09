@@ -4,18 +4,22 @@
 #' If grouping implemented, sequence begins will begin with 1 for each group. Each obversation requires a start and end date to form the time interval. 
 #' Two modalities of grouping are available: consecutive and overlapping. See details. 
 #'
-#' @usage GroupIntervalDates(dat, start, end, mode)
+#' @usage GroupIntervalDates(dat, start, end, by, ...)
 #' 
+#' @param dat an data.frame or data.table containing input data (see details)
 #' @param start date variable in the dataset representing the start of an observation
 #' @param end date variable in the dataset representing the end of an observation
-#' @param mode specify interval type - use string "c" for "consecutive" or "o" for "overlapping". See details.
-#' 
-#' @details 
-#' \itemize{
-#' \item
-#' }
+#' @param by person or group id
+#' @param ... further arguments (see values)
 #' 
 #' @return Returns a sequential vector of the same length as input x 
+#' 
+#' \item{...}{further arguments:
+#'            \itemize{
+#'              \item \code{lag} specify the lag days; default is 1.
+#'              }}
+#' 
+#' @importFrom lubridate interval %within%
 #' 
 #' @examples 
 #' # Example dataset
@@ -35,38 +39,42 @@
 #'                      end = x$end_date, 
 #'                      mode = "c") }))   
 #'                                                          
-#                    
 # --- FUN ----
-GroupIntervalDates <- function(start, end, mode,...){
- 
- vars   <- as.list(match.call()[-1])
- 
- # Param Check
- param.dat <- deparse(substitute(dat))!=""
- 
- params  <- c("start", "end", "mode")
- 
- for(i in params){
-  if(eval(substitute(missing(i)))) {
-   stop(paste("Missing parameter(s):", sQuote(i)), call. = F)
-  }
- }
-
- offset <- +(tolower(mode) %in% c("c", "consecutive"))
- output <- lapply(start, function(x) {
+GroupIntervalDates <- function(dat, start, end, by, ...){
    
-   int  <- Map("interval", 
-               as.list(as.Date(start) - offset),
-               as.list(as.Date(end) + offset))
+   # calls
+   call      <- gsub("()", "",  match.call()[1])
+   is.table  <- deparse(substitute(dat))!=""
+   input     <- as.list(match.call()[-1])
    
-   # browser()
+   if(length(list(...)) == 0){
+      
+      lag <- 1
+      
+   } else {
+      
+      lapply(names(list(...)),
+             function(x)
+                assign(x, unlist(list(...)[x]),
+                       envir = parent.frame(2)))
+      
+   }
    
-   return(+(unlist(Map('%within%', x, int))))
-   # return(which(unlist(Map('%within%', x, int))))
- })
- 
- common <- lapply(output, function(x) browser())
- 
+   # ParamCheck
+   vars  <- c("start", "end", "by")
+   
+   ParamCheck(input, vars, call, is.table)
+   browser()
+   # Vectorise
+   output <- lapply(start, function(x) {
+      
+      int  <- Map("interval", 
+                  as.list(as.Date(start) - lag),
+                  as.list(as.Date(end) + lag))
+      
+      return(+(unlist(Map('%within%', x, int))))
+   })
+   
  browser()
  
  red <- Reduce('+', output)
@@ -88,10 +96,10 @@ GroupIntervalDates <- function(start, end, mode,...){
  
 }
 
-# Implement with base R
-DATA$flag <- unlist(by(DATA, DATA$UID, function(x) {
-  GroupIntervalDates(start = x$start_date, 
-                     end = x$end_date, 
-                     mode = "c") }))
+# # Implement with base R
+# DATA$flag <- unlist(by(DATA, DATA$UID, function(x) {
+#   GroupIntervalDates(start = x$start_date, 
+#                      end = x$end_date, 
+#                      mode = "c") }))
 
 

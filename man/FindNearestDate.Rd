@@ -11,11 +11,11 @@ FindNearestDate(index, comparison, mode, from, to)
 
 \item{comparison}{a vector of timeseries dates to identify as the nearest one}
 
-\item{mode}{specify search priority - specify a label "d" for "directional" or "n" for "nearest". See details.}
-
-\item{to}{interval end point - specify a positive value presenting days after index. See details.}
+\item{mode}{specify search priority - use string "d" for "directional" or "n" for "nearest". See details.}
 
 \item{from}{interval starting point - specify a negative value presenting days prior to index. See details.}
+
+\item{to}{interval end point - specify a positive value presenting days after index. See details.}
 }
 \value{
 a binary vector of the same length as input. Missing values written as NA.
@@ -46,7 +46,7 @@ DATA <- data.frame(UID = c(rep("AAA", 5), rep("BBB", 5)),
                    
 # Implement with data.table
 setDT(DATA)
-DATA[, by = UID,
+DATA[, by = UID
      , flag := FindNearestDate(index = visit_date, 
                                comparison = result_date, 
                                mode = "d",
@@ -55,19 +55,18 @@ DATA[, by = UID,
                                
 # Implement with dplyr
 DATA \%>\% 
-group_by(UID) \%>\% 
-mutate(flag = FindNearestDate(index = visit_date, 
-                               comparison = result_date, 
-                               mode = "n",
-                               from = -730,
-                               to = 548))
+  group_by(UID) \%>\% 
+  mutate(flag = FindNearestDate(index = visit_date, 
+                                comparison = result_date, 
+                                mode = "n",
+                                from = -730,
+                                to = 548))
 
 # Implement with base R 
 DATA$flag <- unlist(by(DATA, DATA$UID, function(x) {
-FindNearestDate(index = x$visit_date,
-                comparison = x$result_date,
-                mode = "n",
-                from = -730,
-                to = 548)
-}))
+  FindNearestDate(index = x$visit_date,
+                  comparison = x$result_date,
+                  mode = "n",
+                  from = -730,
+                  to = 548) }))
 }
