@@ -55,19 +55,14 @@ ParamCheck <- function(input, vars, call, is.table){
   
   input[]  <- dat[, colnames]
   
- } else { # One-off calculator (but missing correct input values)
+ } else { # how should the data be setup if no data provided? eg. used in dplyr or data.table
 
-  to.check <- names(input)[!sapply(input, class) %in% c("character", "numeric", "name", "logical", "Date")]
   
-  if(length(to.check) > 0){
-   stop(call. = F,
-        paste("multiple input values detected for",
-              paste(sQuote(to.check),
-                    collapse = ", ")))
-  }
   
  }
  
  # 3. Compulsary input check
+  
+  # All good - proceed 
   
 }

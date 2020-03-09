@@ -64,17 +64,47 @@ GroupIntervalDates <- function(dat, start, end, by, ...){
    vars  <- c("start", "end", "by")
    
    ParamCheck(input, vars, call, is.table)
-   browser()
+   
    # Vectorise
-   output <- lapply(start, function(x) {
+   input <- Map(list, 
+                as.list(as.Date(dat$start)),
+                as.list(as.Date(dat$end)),
+                Map("interval",
+                    as.list(as.Date(dat$start) - lag),
+                    as.list(as.Date(dat$end) + lag)))
+   
+   by <- factor(eval(substitute(dat$by)))
+   
+   output <- tapply(input, by, function(x){
       
-      int  <- Map("interval", 
-                  as.list(as.Date(start) - lag),
-                  as.list(as.Date(end) + lag))
+      st.date  <- lapply(x, `[[`, 1)
+      en.date  <- lapply(x, `[[`, 2)
+      interval <- lapply(x, `[[`, 3)
       
-      return(+(unlist(Map('%within%', x, int))))
+      mapply(function(start, end){
+         
+         return(+(unlist(Map('%within%', start, interval)) | 
+                            unlist(Map('%within%', end, interval))))
+         
+      }, 
+      start = st.date, 
+      end = en.date)
+      
    })
    
+   
+   
+   
+   # browser()
+   # output <- lapply(dat$start, function(x) {
+   #    
+   #    int  <- Map("interval", 
+   #                as.list(as.Date(dat$start) - lag),
+   #                as.list(as.Date(dat$end) + lag))
+   #    
+   #    return(+(unlist(Map('%within%', x, int))))
+   # })
+   # 
  browser()
  
  red <- Reduce('+', output)
