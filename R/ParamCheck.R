@@ -38,7 +38,7 @@ ParamCheck <- function(input, vars, call, is.table){
   
  # 2. Missing input check
  if(is.table){  # Dataset provided (but missing correct input columns)
-  browser()
+  
   dat       <- as.data.frame(get("dat", parent.frame()), row.names = NULL)
   input     <- input[!names(input) %in% c("dat", "lag")]
   colnames  <- as.vector(sapply(input, as.character))
@@ -56,7 +56,7 @@ ParamCheck <- function(input, vars, call, is.table){
   input[]  <- dat[, colnames]
   
  } else { # One-off calculator (but missing correct input values)
-  browser()
+
   to.check <- names(input)[!sapply(input, class) %in% c("character", "numeric", "name", "logical", "Date")]
   
   if(length(to.check) > 0){
@@ -69,19 +69,5 @@ ParamCheck <- function(input, vars, call, is.table){
  }
  
  # 3. Compulsary input check
- has.na <- sapply(vars,
-                  function(x){
-                   if(class(input[[x]]) == "name"){
-                     browser()
-                    input[[x]] <- as.character(input[[x]])
-                   }
-                   any(is.na(input[[x]]) | input[[x]] == "NA")
-                  }, USE.NAMES = TRUE)
- 
- if(any(has.na)){
-  stop(call. = F,
-       paste(paste(sQuote(names(which(has.na))),
-                   collapse = ", "),
-             "cannot contain NA! For acceptable values,", paste0("see ?", call)))
- }
+  
 }
