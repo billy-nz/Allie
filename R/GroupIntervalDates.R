@@ -17,6 +17,7 @@
 #' \item{...}{further arguments:
 #'            \itemize{
 #'              \item \code{lag} specify the lag days; default is 1.
+#'              \item \code{zero.index} specify whether the indexing sequence should start at 0 instead of 1; default is FALSE
 #'              }}
 #' 
 #' @importFrom lubridate interval %within%
@@ -81,20 +82,26 @@ GroupIntervalDates <- function(dat, start, end, by, ...){
    vars  <- c("start", "end", "by")
    
    ParamCheck(input, vars, call, is.table)
+   
+   # dat <- dat[eval(substitute(order(dat$by, dat$start))), ]
    browser()
-   dat <- dat[eval(substitute(order(dat$by, dat$start))), ]
-   
    # Vectorise
-   input <- Map(list, 
-                ST = as.list(as.Date(dat$start)),
-                EN = as.list(as.Date(dat$end)),
-                IN = Map("interval",
-                         as.list(as.Date(dat$start) - lag),
-                         as.list(as.Date(dat$end) + lag)))
+   # input <- Map(list, 
+   #              ST = as.list(eval(substitute(dat$start))),
+   #              EN = as.list(eval(substitute(dat$end))),
+   #              IN = Map("interval",
+   #                       as.list(eval(substitute(dat$start)) - lag),
+   #                       as.list(eval(substitute(dat$end)) + lag)))
    
-   by <- factor(eval(substitute(dat$by)))
+   dat3 <- split(dat[,paste(c(input$start, input$end))], 
+                 f = eval(substitute(dat$by)))
    
+   `browser()
+   # by <- factor(eval(substitute(dat$by)))
+   browser()
    output <- tapply(input, by, function(x){
+      
+      browser()
       
       interval <- lapply(x, `[[`, "IN")
       

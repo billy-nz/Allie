@@ -23,6 +23,7 @@ Returns a sequential vector of the same length as input x
 \item{...}{further arguments:
            \itemize{
              \item \code{lag} specify the lag days; default is 1.
+             \item \code{zero.index} specify whether the indexing sequence should start at 0 instead of 1; default is FALSE
              }}
 }
 \description{
