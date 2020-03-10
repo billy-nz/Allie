@@ -49,9 +49,26 @@ GroupIntervalDates <- function(dat, start, end, by, ...){
    
    if(length(list(...)) == 0){
       
-      lag <- 1
+      lag         <- 1
+      zero.index  <- FALSE
       
    } else {
+      
+      default <- setdiff(c("lag", "zero.index"), names(list(...)))
+      
+      if(length(default) == 1){
+         
+         lapply(default,
+                function(x){
+                   
+                   if(x == "lag"){
+                      val <- 1
+                   } else {
+                      val <- FALSE
+                   }
+                   assign(x, val, envir = parent.frame(2))
+                })
+      }
       
       lapply(names(list(...)),
              function(x)
@@ -64,72 +81,57 @@ GroupIntervalDates <- function(dat, start, end, by, ...){
    vars  <- c("start", "end", "by")
    
    ParamCheck(input, vars, call, is.table)
+   browser()
+   dat <- dat[eval(substitute(order(dat$by, dat$start))), ]
    
    # Vectorise
    input <- Map(list, 
-                as.list(as.Date(dat$start)),
-                as.list(as.Date(dat$end)),
-                Map("interval",
-                    as.list(as.Date(dat$start) - lag),
-                    as.list(as.Date(dat$end) + lag)))
+                ST = as.list(as.Date(dat$start)),
+                EN = as.list(as.Date(dat$end)),
+                IN = Map("interval",
+                         as.list(as.Date(dat$start) - lag),
+                         as.list(as.Date(dat$end) + lag)))
    
    by <- factor(eval(substitute(dat$by)))
    
    output <- tapply(input, by, function(x){
       
-      st.date  <- lapply(x, `[[`, 1)
-      en.date  <- lapply(x, `[[`, 2)
-      interval <- lapply(x, `[[`, 3)
+      interval <- lapply(x, `[[`, "IN")
       
-      mapply(function(start, end){
+      vec <- Map(function(start, end){
          
-         return(+(unlist(Map('%within%', start, interval)) | 
-                            unlist(Map('%within%', end, interval))))
-         
+         return(sapply(interval, function(x)
+            +(start %within% x | end %within% x)))
       }, 
-      start = st.date, 
-      end = en.date)
+      start = lapply(x, `[[`, "ST"), 
+      end = lapply(x, `[[`, "EN"))
       
+      encoding <- sapply(1:length(vec), function(x) {
+         
+         starting <- if(zero.index){
+            0L
+         } else {
+            1L
+         }
+         seq <- vec[[x]]
+         
+         return(
+            if(x == 1L){ # Set first element
+               starting
+            } else { 
+               if(seq[x - 1] == 0){ # If prior position is 0, then encode as 1L [results in new index during cumsum]
+                  1L
+               } else { 
+                  0L
+               }
+            })
+      })
+      
+      return(cumsum(encoding))
    })
    
-   
-   
-   
-   # browser()
-   # output <- lapply(dat$start, function(x) {
-   #    
-   #    int  <- Map("interval", 
-   #                as.list(as.Date(dat$start) - lag),
-   #                as.list(as.Date(dat$end) + lag))
-   #    
-   #    return(+(unlist(Map('%within%', x, int))))
-   # })
-   # 
- browser()
- 
- red <- Reduce('+', output)
- 
- # Output interpreter
- # n.int <- unlist(Map('sum', output))
- # index <- cumsum(replace(n.int, which(n.int!=1), 0))
- c.index <- sapply(output, "[[", 1)
- 
- # lengths <- rle(unlist(output))$lengths
- 
- lengths <- rle(c.index)$lengths
- index   <- rep(seq(lengths), lengths)
- # browser()
- # index <- browser()
- 
- 
- return(as.numeric(c.index))
- 
+   # Recombine groups by factor order
+   return(unsplit(output, f = by)) 
 }
-
-# # Implement with base R
-# DATA$flag <- unlist(by(DATA, DATA$UID, function(x) {
-#   GroupIntervalDates(start = x$start_date, 
-#                      end = x$end_date, 
-#                      mode = "c") }))
 
 

@@ -40,7 +40,7 @@ ParamCheck <- function(input, vars, call, is.table){
  if(is.table){  # Dataset provided (but missing correct input columns)
   
   dat       <- as.data.frame(get("dat", parent.frame()), row.names = NULL)
-  input     <- input[!names(input) %in% c("dat", "lag")]
+  input     <- input[!names(input) %in% c("dat", "lag", "zero.index")]
   colnames  <- as.vector(sapply(input, as.character))
   
   is.missing <- any(!colnames %in% names(dat))
