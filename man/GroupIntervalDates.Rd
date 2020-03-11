@@ -32,21 +32,7 @@ If grouping implemented, sequence begins will begin with 1 for each group. Each 
 Two modalities of grouping are available: consecutive and overlapping. See details.
 }
 \examples{
-# Example dataset
-DATA[, by = UID
-     , flag := GroupIntervalDates(start = start_date, 
-                                  end = end_date, 
-                                  mode = "c")]
-                       
-DATA \%>\%
- group_by(UID) \%>\%
- mutate(flag = GroupIntervalDates(start = start_date, 
-                                  end = end_date, 
-                                  mode = "c"))       
-                                  
-DATA$flag <- unlist(by(DATA, DATA$UID, function(x) {
-  GroupIntervalDates(start = x$start_date,
-                     end = x$end_date, 
-                     mode = "c") }))   
+DATA$lag1 <- GroupIntervalDates(dat=DATA, start=start_date, end=end_date, by=UID)
+DATA$lag0 <- GroupIntervalDates(dat=DATA, start=start_date, end=end_date, by=UID, lag = 0, zero.index = T)
                                                          
 }

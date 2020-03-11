@@ -22,23 +22,9 @@
 #' 
 #' @importFrom lubridate interval %within%
 #' 
-#' @examples 
-#' # Example dataset
-#' DATA[, by = UID
-#'      , flag := GroupIntervalDates(start = start_date, 
-#'                                   end = end_date, 
-#'                                   mode = "c")]
-#'                        
-#' DATA %>%
-#'  group_by(UID) %>%
-#'  mutate(flag = GroupIntervalDates(start = start_date, 
-#'                                   end = end_date, 
-#'                                   mode = "c"))       
-#'                                   
-#' DATA$flag <- unlist(by(DATA, DATA$UID, function(x) {
-#'   GroupIntervalDates(start = x$start_date,
-#'                      end = x$end_date, 
-#'                      mode = "c") }))   
+#' @examples
+#' DATA$lag1 <- GroupIntervalDates(dat=DATA, start=start_date, end=end_date, by=UID)
+#' DATA$lag0 <- GroupIntervalDates(dat=DATA, start=start_date, end=end_date, by=UID, lag = 0, zero.index = T)
 #'                                                          
 # --- FUN ----
 GroupIntervalDates <- function(dat, start, end, by, ...){
@@ -84,10 +70,10 @@ GroupIntervalDates <- function(dat, start, end, by, ...){
    ParamCheck(input, vars, call, is.table)
    
    # Row order matters! Before sorting, creating a row index.
+   index <- sort(as.numeric(eval(substitute(dat$start))), 
+                 index.return = T)$ix
    
-   dat <- dat[eval(substitute(order(dat$by, dat$start))), ]
-   
-   # LDAT <- as.list(dat[,paste(c(input$by, input$start, input$end))])
+   dat <- dat[index, ]
    
    LDAT <- Map(list,
                 ST = as.list(eval(substitute(dat$start))),
@@ -96,7 +82,7 @@ GroupIntervalDates <- function(dat, start, end, by, ...){
    by <- factor(dat[,paste(input$by)])
    
    output <- tapply(LDAT, by, function(x){
-      # browser()
+
       interval <- Map("interval", 
                       lapply(x, function(x) x$ST - lag),
                       lapply(x, function(x) x$EN + lag))
@@ -112,8 +98,11 @@ GroupIntervalDates <- function(dat, start, end, by, ...){
       start = lapply(x, `[[`, "ST"), 
       end = lapply(x, `[[`, "EN"))
       
-      browser()
+      # browser()
       
+      # Encoding
+      # Set first element always the starting position
+      # In subsequent elements; a new group is where index position is 1 and prior is 0
       encoding <- sapply(1:length(vec), function(x) {
          
          starting <- if(zero.index){
@@ -124,10 +113,11 @@ GroupIntervalDates <- function(dat, start, end, by, ...){
          seq <- vec[[x]]
          
          return(
-            if(x == 1L){ # Set first element
+            if(x == 1L){ 
                starting
             } else { 
-               if(seq[x - 1] == 0){ # If prior position is 0, then encode as 1L [results in new index during cumsum]
+               
+               if(seq[x - 1] == 0){ 
                   1L
                } else { 
                   0L
@@ -139,7 +129,12 @@ GroupIntervalDates <- function(dat, start, end, by, ...){
    })
    
    # Recombine groups by factor order
-   return(unsplit(output, f = by)) 
+   
+   combined <- unsplit(output, f = by)
+   
+   # browser()
+   
+   return(combined[order(index)]) 
 }
 
 
