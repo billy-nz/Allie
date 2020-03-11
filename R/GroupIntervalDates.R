@@ -83,35 +83,36 @@ GroupIntervalDates <- function(dat, start, end, by, ...){
    
    ParamCheck(input, vars, call, is.table)
    
-   # dat <- dat[eval(substitute(order(dat$by, dat$start))), ]
-   browser()
-   # Vectorise
-   # input <- Map(list, 
-   #              ST = as.list(eval(substitute(dat$start))),
-   #              EN = as.list(eval(substitute(dat$end))),
-   #              IN = Map("interval",
-   #                       as.list(eval(substitute(dat$start)) - lag),
-   #                       as.list(eval(substitute(dat$end)) + lag)))
+   # Row order matters! Before sorting, creating a row index.
    
-   dat3 <- split(dat[,paste(c(input$start, input$end))], 
-                 f = eval(substitute(dat$by)))
+   dat <- dat[eval(substitute(order(dat$by, dat$start))), ]
    
-   `browser()
-   # by <- factor(eval(substitute(dat$by)))
-   browser()
-   output <- tapply(input, by, function(x){
-      
-      browser()
-      
-      interval <- lapply(x, `[[`, "IN")
+   # LDAT <- as.list(dat[,paste(c(input$by, input$start, input$end))])
+   
+   LDAT <- Map(list,
+                ST = as.list(eval(substitute(dat$start))),
+                EN = as.list(eval(substitute(dat$end))))
+
+   by <- factor(dat[,paste(input$by)])
+   
+   output <- tapply(LDAT, by, function(x){
+      # browser()
+      interval <- Map("interval", 
+                      lapply(x, function(x) x$ST - lag),
+                      lapply(x, function(x) x$EN + lag))
       
       vec <- Map(function(start, end){
          
-         return(sapply(interval, function(x)
-            +(start %within% x | end %within% x)))
+         return(sapply(interval, function(x){
+
+            +(start %within% x | end %within% x)
+            
+         }))
       }, 
       start = lapply(x, `[[`, "ST"), 
       end = lapply(x, `[[`, "EN"))
+      
+      browser()
       
       encoding <- sapply(1:length(vec), function(x) {
          
