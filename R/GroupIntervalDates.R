@@ -21,6 +21,7 @@
 #'              }}
 #' 
 #' @importFrom lubridate interval %within%
+#' @importFrom data.table setDT
 #' 
 #' @examples
 #' DATA$lag1 <- GroupIntervalDates(dat=DATA, start=start_date, end=end_date, by=UID)
@@ -73,68 +74,18 @@ GroupIntervalDates <- function(dat, start, end, by, ...){
    index <- sort(as.numeric(eval(substitute(dat$start))), 
                  index.return = T)$ix
    
-   dat <- dat[index, ]
+   dat <- setDT(dat[index, ])
    
-   LDAT <- Map(list,
-                ST = as.list(eval(substitute(dat$start))),
-                EN = as.list(eval(substitute(dat$end))))
-
-   by <- factor(dat[,paste(input$by)])
+   dat[, sequence := DateVectoriser(dat = .SD, 
+                                    start = input$start, 
+                                    end = input$end, 
+                                    lag = lag, 
+                                    zero.index = zero.index), 
+       by = eval(deparse(substitute(by)))]
    
-   output <- tapply(LDAT, by, function(x){
-
-      interval <- Map("interval", 
-                      lapply(x, function(x) x$ST - lag),
-                      lapply(x, function(x) x$EN + lag))
-      
-      vec <- Map(function(start, end){
-         
-         return(sapply(interval, function(x){
-
-            +(start %within% x | end %within% x)
-            
-         }))
-      }, 
-      start = lapply(x, `[[`, "ST"), 
-      end = lapply(x, `[[`, "EN"))
-      
-      # browser()
-      
-      # Encoding
-      # Set first element always the starting position
-      # In subsequent elements; a new group is where index position is 1 and prior is 0
-      encoding <- sapply(1:length(vec), function(x) {
-         
-         starting <- if(zero.index){
-            0L
-         } else {
-            1L
-         }
-         seq <- vec[[x]]
-         
-         return(
-            if(x == 1L){ 
-               starting
-            } else { 
-               
-               if(seq[x - 1] == 0){ 
-                  1L
-               } else { 
-                  0L
-               }
-            })
-      })
-      
-      return(cumsum(encoding))
-   })
+   dat <- dat[order(index)]
    
-   # Recombine groups by factor order
-   
-   combined <- unsplit(output, f = by)
-   
-   # browser()
-   
-   return(combined[order(index)]) 
+   return(dat$sequence)
 }
 
 
