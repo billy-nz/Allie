@@ -22,6 +22,7 @@
 #' 
 #' @importFrom lubridate interval %within%
 #' @importFrom data.table setDT
+#' @importFrom parallel mcMap
 #' 
 #' @examples
 #' DATA$lag1 <- GroupIntervalDates(dat=DATA, start=start_date, end=end_date, by=UID)
