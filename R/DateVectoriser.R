@@ -27,13 +27,13 @@ DateVectoriser <- function(dat, start, end, lag, zero.index){
  start = start, 
  end = end)
  
- encoding <- sapply(1:length(vec), function(x) {
-  
-  starting <- if(zero.index){
+ starting <- if(zero.index){
    0L
-  } else {
+ } else {
    1L
-  }
+ }
+
+ encoding <- sapply(1:length(vec), function(x) {
   
   seq <- vec[[x]]
   
@@ -41,10 +41,10 @@ DateVectoriser <- function(dat, start, end, lag, zero.index){
    if(x == 1L){ 
     starting
    } else { 
-    if(seq[x - 1] == 0){ 
-     1L
-    } else { 
+    if(any(seq[1:x-1] == 1)){ 
      0L
+    } else { 
+     1L
     }
    })
   

@@ -3,3 +3,4 @@
 importFrom(data.table,setDT)
 importFrom(lubridate,"%within%")
 importFrom(lubridate,interval)
+importFrom(parallel,mcMap)
