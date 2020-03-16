@@ -3,7 +3,7 @@
 #' \code{DateVectoriser} returns a sequential vector of binary values in the same length as input x. 
 #' Set first element always the starting position. In subsequent elements; a new index is formed where index position equates 1 and the prior index is 0.
 #'
-#' @usage GroupIntervalDates(dat, start, end, by, ...)
+#' @usage DateVectoriser(dat, start, end, lag, zero.index)
 #' 
 #' @param dat a data.table containing input data (see details)
 #' @param start date variable in the dataset representing the start of an observation

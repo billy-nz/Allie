@@ -4,7 +4,7 @@
 \alias{DateVectoriser}
 \title{Date Vectoriser for GroupIntervalDates}
 \usage{
-GroupIntervalDates(dat, start, end, by, ...)
+DateVectoriser(dat, start, end, lag, zero.index)
 }
 \arguments{
 \item{dat}{a data.table containing input data (see details)}
