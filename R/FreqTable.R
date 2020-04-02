@@ -41,6 +41,8 @@
 #'           yvar = "gender",
 #'           pcn ="h")
 #'           
+#' @export FreqTable
+#'           
    
 # ---FUN---
 FreqTable <- function(data, xvar, yvar, xlab, ylab, margin, pcn, yord, copy){

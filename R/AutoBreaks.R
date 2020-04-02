@@ -43,6 +43,8 @@
 #' # Can set decimal place
 #' AutoBreaks(cont.int, c(3,4,5), dp=4)
 #' AutoBreaks(norm.int, c(0.4,0.6,0.8), 5)
+#' 
+#' @export AutoBreaks
 
 # --- FUN ----
 AutoBreaks <- function(x, by, ...){

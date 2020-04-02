@@ -12,21 +12,18 @@
 #' @param by person or group id
 #' @param ... further arguments (see values)
 #' 
-#' @return Returns a sequential vector of the same length as input x 
-#' 
-#' \item{...}{further arguments:
-#'            \itemize{
-#'              \item \code{lag} specify the lag days; default is 1.
-#'              \item \code{zero.index} specify whether the indexing sequence should start at 0 instead of 1; default is FALSE
-#'              }}
+#' @return Returns a sequential vector of the same length as input x. Two further \code{...} arguments are possible:
+#' \item{lag}{specify the lag days; default is 1}
+#' \item{zero.index}{specify whether the indexing sequence should start at 0 instead of 1; default is FALSE}
 #' 
 #' @importFrom lubridate interval %within%
 #' @importFrom data.table setDT
-#' @importFrom parallel mcMap
+#' @export GroupIntervalDates
 #' 
 #' @examples
-#' DATA$lag1 <- GroupIntervalDates(dat=DATA, start=start_date, end=end_date, by=UID)
-#' DATA$lag0 <- GroupIntervalDates(dat=DATA, start=start_date, end=end_date, by=UID, lag = 0, zero.index = T)
+#' DATA$lag1   <- GroupIntervalDates(dat=DATA, start=start_date, end=end_date, by=UID)
+#' DATA$lag0   <- GroupIntervalDates(dat=DATA, start=start_date, end=end_date, by=UID, lag = 0)
+#' DATA$python <- GroupIntervalDates(dat=DATA, start=start_date, end=end_date, by=UID, zero.index = TRUE)
 #'                                                          
 # --- FUN ----
 GroupIntervalDates <- function(dat, start, end, by, ...){

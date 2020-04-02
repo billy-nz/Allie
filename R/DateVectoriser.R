@@ -13,6 +13,7 @@
 #' 
 #' @return Returns a sequential vector of the same length as input x 
 #' 
+#' @export DateVectoriser
 
 DateVectoriser <- function(dat, start, end, lag, zero.index){
 

@@ -52,6 +52,7 @@ AutoBreaks(norm.int, by = c(0.8, 0.8), 6) # can set decimal place
 # Can set decimal place
 AutoBreaks(cont.int, c(3,4,5), dp=4)
 AutoBreaks(norm.int, c(0.4,0.6,0.8), 5)
+
 }
 \seealso{
 \code{\link{FreqTable}} utilised this function when users attempt to create a frequency table using continous variables.

@@ -21,6 +21,8 @@
 #' stop the function's operation and return an error message.
 #' @author
 #' Billy Wu (R Developer)
+#' 
+#' @export ParamCheck
 #'
 ParamCheck <- function(input, vars, call, is.table){
  

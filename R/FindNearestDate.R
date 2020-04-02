@@ -57,6 +57,8 @@
 #'                   mode = "n",
 #'                   from = -730,
 #'                   to = 548) }))
+#'                   
+#' @export FindNearestDate
 
 # --- FUN ----FindNearestDate (v2)
 FindNearestDate <- function(index, comparison, mode, from, to){

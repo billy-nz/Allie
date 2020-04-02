@@ -69,4 +69,5 @@ DATA$flag <- unlist(by(DATA, DATA$UID, function(x) {
                   mode = "n",
                   from = -730,
                   to = 548) }))
+                  
 }

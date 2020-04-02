@@ -18,13 +18,9 @@ GroupIntervalDates(dat, start, end, by, ...)
 \item{...}{further arguments (see values)}
 }
 \value{
-Returns a sequential vector of the same length as input x 
-
-\item{...}{further arguments:
-           \itemize{
-             \item \code{lag} specify the lag days; default is 1.
-             \item \code{zero.index} specify whether the indexing sequence should start at 0 instead of 1; default is FALSE
-             }}
+Returns a sequential vector of the same length as input x. Two further \code{...} arguments are possible:
+\item{lag}{specify the lag days; default is 1}
+\item{zero.index}{specify whether the indexing sequence should start at 0 instead of 1; default is FALSE}
 }
 \description{
 \code{GroupIntervalDates} returns a sequential vector of the same length as input x. Overlapping time intervals are groupped, sequenced, and indexed starting with 1.
@@ -32,7 +28,8 @@ If grouping implemented, sequence begins will begin with 1 for each group. Each 
 Two modalities of grouping are available: consecutive and overlapping. See details.
 }
 \examples{
-DATA$lag1 <- GroupIntervalDates(dat=DATA, start=start_date, end=end_date, by=UID)
-DATA$lag0 <- GroupIntervalDates(dat=DATA, start=start_date, end=end_date, by=UID, lag = 0, zero.index = T)
+DATA$lag1   <- GroupIntervalDates(dat=DATA, start=start_date, end=end_date, by=UID)
+DATA$lag0   <- GroupIntervalDates(dat=DATA, start=start_date, end=end_date, by=UID, lag = 0)
+DATA$python <- GroupIntervalDates(dat=DATA, start=start_date, end=end_date, by=UID, zero.index = TRUE)
                                                          
 }
