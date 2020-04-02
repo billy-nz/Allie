@@ -3,3 +3,10 @@
 importFrom(data.table,setDT)
 importFrom(lubridate,"%within%")
 importFrom(lubridate,interval)
+
+export(AutoBreaks)
+export(DateVectoriser)
+export(FindNearestDate)
+export(FreqTable)
+export(GroupIntervalDates)
+export(ParamCheck)
